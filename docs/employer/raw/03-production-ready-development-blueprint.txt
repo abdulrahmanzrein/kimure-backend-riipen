@@ -1,0 +1,866 @@
+
+
+AI Brokerage Platform
+Real Estate  ·  Rural Land  ·  Agricultural Assets  ·  Financial Services
+PHASE 2
+Production-Ready Development Blueprint
+Full Build  ·  AI Integration  ·  CRM  ·  Monetization  ·  Launch Architecture
+
+
+
+DOCUMENT STATUS
+Internal Development Blueprint
+Prepared for: Backend Development Team
+Classification: Confidential
+PHASE 1 STATUS
+✔  Website Front-End — Complete
+✔  Mobile App Prototype — Complete
+✔  AI Tools (Gemini Gems) — Complete
+
+
+2025  ·  Version 1.0  ·  support@kimure.com  ·  www.kimure.com
+
+EXECUTIVE SUMMARY
+
+
+
+Phase 1 delivered the visual foundation of Kimure: a complete website UI, a semi-functional mobile prototype,
+and five custom AI tools built on Google Gemini. Phase 2 is where Kimure becomes real.
+This document is a production-ready execution blueprint — structured so a backend development team can start immediately.
+
+
+Phase 1 — What Was Built
+Kimure.com — fully designed front-end (Hostinger)
+Mobile app prototype (React / Next.js)
+Light / Dark mode + EN/FR localization
+Onboarding registration flow (visual)
+5 Gemini AI tools (Gems): Property Scout, Property Analyzer, Rental Finder, Property Evaluator, Mortgage Calculator
+GitHub repositories for website + mobile app
+
+All Phase 1 assets are production-ready and waiting to be connected to a live backend.
+
+
+
+Phase 2 — What Must Be Built
+Secure backend (Node.js / NestJS + PostgreSQL + MongoDB)
+Authentication system (Firebase Auth / JWT)
+Live property listings API
+Gemini API integration (replacing static Gems)
+Three-tier CRM dashboard (Users, Partners, Admin)
+Lead monetization system (CPL + subscriptions)
+Payment infrastructure (Stripe)
+Equifax / TransUnion financial data integration
+iOS + Android production app (React Native / Expo)
+Progressive Web App (PWA) conversion
+
+
+STRATEGIC REMINDER: Kimure is NOT a listing portal.
+Kimure IS: An AI-powered decision engine + lead marketplace.
+Every UX decision, AI design choice, and CRM structure must reflect this positioning.
+
+
+SECTION 1  |  SYSTEM ARCHITECTURE — CORE FOUNDATION
+
+
+1. System Architecture
+
+
+
+The backend architecture must be built for scale from day one. Kimure will serve three distinct user types — Individuals, Partners, and Admins — each with separate data models, permission sets, and AI interaction patterns. The following stack is recommended based on Kimure's specific requirements.
+
+1.1 — Recommended Backend Stack
+
+Layer
+Technology
+Purpose
+Priority
+Runtime / Framework
+Node.js + NestJS
+Scalable modular architecture, REST + GraphQL
+Critical
+Primary Database
+PostgreSQL
+Users, listings, CRM, transactions
+Critical
+Secondary Database
+MongoDB
+AI interactions, logs, behavior analytics
+Critical
+Authentication
+Firebase Auth + JWT
+Role-based access (User/Partner/Admin)
+Critical
+Hosting & Scaling
+AWS (EC2 + S3) or GCP
+Auto-scaling, CDN, secure storage
+Critical
+Caching Layer
+Redis
+AI response caching, session management
+High
+Real-time Events
+Socket.io
+Live notifications, in-app messaging
+High
+File Storage
+AWS S3 or GCP Cloud Storage
+Property photos, KYC documents
+Critical
+Email / SMS
+SendGrid + Twilio
+Auth OTPs, lead notifications
+High
+Queue System
+Bull (Redis-based)
+Background AI jobs, email queues
+Medium
+
+
+1.2 — API Layer Design
+
+REST API
+Use REST for:
+User authentication (signup / login / logout)
+Property CRUD operations (create, read, update, delete)
+Payment processing (Stripe webhooks)
+KYC document upload
+Lead submission and purchase
+Partner approval workflows
+GraphQL API
+Use GraphQL for:
+Dashboard data queries (flexible field selection)
+AI recommendation queries
+CRM pipeline data
+Analytics and reporting
+User profile + preferences
+Cross-platform data synchronization
+
+
+1.3 — Database Schema (Core Tables)
+
+PostgreSQL tables (structured): users, partners, listings, leads, transactions, subscriptions, payments, kyc_documents, notifications
+MongoDB collections (flexible): ai_interactions, user_behavior, search_logs, recommendation_cache, audit_trail
+
+
+PostgreSQL — Structured Data
+users — id, role, email, password_hash, kyc_status, created_at
+partners — id, user_id, partner_type, business_name, verified, subscription_tier
+listings — id, partner_id, type, price, location, status, ai_score
+leads — id, user_id, partner_id, listing_id, status, intent_data
+transactions — id, lead_id, amount, commission, status, closed_at
+subscriptions — id, partner_id, plan, billing_cycle, stripe_id
+MongoDB — Dynamic Data
+ai_interactions — user_id, engine, query, response, timestamp
+user_behavior — user_id, pages_viewed, listings_saved, reports_run
+search_logs — query_text, filters_applied, results_count, user_id
+recommendation_cache — user_id, recommendations, ai_model_version, expires_at
+audit_trail — admin_id, action, target_user, timestamp, ip_address
+
+
+1.4 — Environment & Security
+
+All API keys (Gemini, Equifax, Stripe) stored as ENV variables — never in front-end code
+HTTPS enforced on all endpoints — no HTTP fallback
+Role-Based Access Control (RBAC) enforced at API middleware level
+GDPR + PIPEDA + CASL compliance built into user data models from Sprint 1
+All passwords hashed with bcrypt (minimum 12 salt rounds)
+Rate limiting on all public API endpoints (prevent abuse)
+Automated daily database backups to AWS S3
+
+SECTION 2  |  WEBSITE — FRONT-END TO PRODUCTION
+
+
+2. Website Production Upgrade
+
+
+
+Current state: Kimure.com is a visually complete front-end with no backend connection. GitHub: https://github.com/AliAbualsoud/Kimure-Website — hosted on Hostinger. Phase 2 upgrades each static page to a live, data-connected experience.
+
+
+2.1 — Connect Front-End to Backend APIs
+
+Every button, form, and data display on the website must be wired to the backend API. The following table maps each website section to its required API integration:
+
+Website Page / Section
+API Endpoint Required
+Sprint
+Login / Register
+POST /auth/signup, POST /auth/login
+Sprint 1
+Onboarding Flow
+POST /users/onboarding, POST /users/profile
+Sprint 1
+Buy / Sell / Rent Pages
+GET /listings?type=&budget=&location=
+Sprint 2
+AI Recommendation Panel
+POST /ai/scout, POST /ai/analyze
+Sprint 2
+User Dashboard
+GET /users/:id/dashboard
+Sprint 3
+Partner Dashboard
+GET /partners/:id/leads, GET /partners/:id/listings
+Sprint 3
+Admin Panel
+GET /admin/users, PATCH /admin/users/:id/approve
+Sprint 3
+Marketplace Search
+GET /listings/search?q=&filters=
+Sprint 2
+Smart Calculator
+POST /ai/mortgage
+Sprint 2
+Lead Button
+POST /leads
+Sprint 4
+Payment / Subscription
+POST /payments/subscribe (Stripe)
+Sprint 4
+
+
+2.2 — AI-Driven Smart Pages
+
+Buy / Invest / Rent Pages
+AI recommendation panel (top of feed)
+Filters powered by AI: budget range, ROI target, lifestyle score
+Real-time listings via MLS / Zillow API
+AI Match Score badge on every listing card
+"Why this property?" AI explanation on click
+One-click Lead Button to connect with listing agent
+Intelligent Onboarding Capture
+Budget (range slider, not free text)
+Intent: Buy / Invest / Rent / Farm
+Timeline: Immediate / 1–3 months / 6+ months
+Risk tolerance: Conservative / Moderate / Aggressive
+Location preferences (smart geo-search)
+All data stored in DB and fed directly to AI engines
+
+
+2.3 — Progressive Web App (PWA) Conversion
+
+Add manifest.json and service worker to Kimure.com
+Users can install Kimure as an app from their browser (no App Store required)
+Offline mode: saved listings and last AI report accessible without internet
+Push notifications enabled (new listings, lead alerts, AI updates)
+PWA score target: Lighthouse 90+ on mobile
+
+SECTION 3  |  MOBILE APPLICATION — PRODUCTION EVOLUTION
+
+
+3. Mobile Application
+
+
+
+Current state: Semi-functional React / Next.js mobile prototype with working navigation, registration flow, mock dashboard, and AI discovery UI. GitHub: https://github.com/amandeepmanan04/kimure-mobile-app.git
+
+
+3.1 — Framework Decision
+
+Recommended: React Native (Expo)
+Single codebase deploys to iOS + Android simultaneously
+Expo managed workflow reduces DevOps overhead
+Reuses existing React component logic from Phase 1
+Expo EAS Build handles App Store + Play Store submission
+Supports biometric auth, push notifications, camera (KYC)
+Strong community, Kimure team already familiar with React
+Alternative: Flutter (if React Native not viable)
+Excellent performance on both platforms
+Requires learning Dart — higher learning curve
+Better for complex custom UI animations
+Consider only if React Native performance issues arise
+
+Decision: Start with React Native (Expo). Migrate to Flutter only if critical performance blockers appear in testing.
+
+
+
+
+
+3.2 — Core Features to Build in Phase 2
+
+A. Real Authentication (Replace Mock System)
+JWT tokens stored securely in device Keychain (iOS) / Keystore (Android)
+Firebase Auth for social login: Google + Apple
+OTP via SMS (Twilio) for phone number verification
+Biometric login (Face ID / Fingerprint) via Expo LocalAuthentication
+Role-based routing: Individual → User Dashboard | Business → Partner Dashboard | Admin → Admin Panel
+
+B. Live Connected Dashboards
+
+Individual User Dashboard
+AI-recommended properties (live from backend)
+Saved / favourited listings
+AI reports history
+Mortgage insights panel
+Progress tracking (onboarding completion)
+"Connect with Agent" CTA on every listing
+Notification center (real-time)
+Partner / Business Dashboard
+Live lead inbox (qualified users)
+User intent data per lead: budget, AI reports viewed, timeline
+CRM pipeline: New Lead > Contacted > Negotiation > Closed
+AI suggestion: "Best time to contact this lead"
+Listing management (create / edit / pause)
+Performance analytics: views, leads, conversion rate
+Subscription and billing management
+
+
+C. Ask Kimure AI — Central AI Interface (Critical Feature)
+
+The single most important UX feature of the mobile app.
+A persistent AI chat interface — always accessible from the bottom navigation bar.
+"Ask Kimure AI" connects the user to all 5 AI engines via a single conversational interface.
+Context-aware: the AI knows the user's profile, saved listings, budget, and behavior history.
+
+
+Accessible from bottom nav bar on every screen
+Natural language queries: "Find me a farm under $500K in Ontario"
+Routes to correct AI engine automatically (Scout, Analyzer, Mortgage, etc.)
+Saves all queries to MongoDB for personalization over time
+Displays AI response with formatted report card (not raw text)
+
+SECTION 4  |  AI ANALYSIS TOOLS — GEMINI API FULL INTEGRATION
+
+
+4. AI System Integration
+
+
+
+Current state: 5 AI tools built as Google Gemini Gems (Opals). They are operational but live inside Google's interface — not inside Kimure. Phase 2 moves all AI logic into Kimure's own backend via the Gemini API, making it invisible and seamless to users.
+
+
+4.1 — AI Tool Summary (Phase 1 Output)
+
+AI Engine
+Input Data
+Output Delivered
+Property Scout
+User budget, location, property type, timeline
+AI-ranked list of below-market listings with match score
+Property Analyzer
+Property address, user financial profile
+Full investment report: ROI, break-even, 5-year forecast
+Rental Finder
+Lifestyle data, budget, preferred regions
+Matched rental listings with compatibility score
+Property Evaluator
+Property address, recent comparables
+Fair market valuation with confidence band
+Mortgage Calculator
+Income, credit data (Equifax), down payment
+Borrowing power, monthly payment, lender matches
+
+
+4.2 — Backend AI Orchestrator Architecture
+
+A central AI Gateway Service handles all AI requests. This service receives user queries, enriches them with profile and market data, calls Gemini API, caches the response, logs the interaction, and returns a structured result.
+
+AI Gateway Service
+  ├── Property Scout Engine  →  GET /ai/scout
+  ├── Investment Analyzer Engine  →  POST /ai/analyze
+  ├── Rental Matching Engine  →  POST /ai/rental
+  ├── Valuation Engine  →  POST /ai/valuate
+  └── Mortgage Engine  →  POST /ai/mortgage
+
+
+4.3 — Gemini API Integration Process
+
+Step 1: Developer accesses Google AI Studio (aistudio.google.com) with Kimure company Google account
+Step 2: Generate API Key — stored ONLY in backend ENV variables, never in front-end code
+Step 3: Extract exact prompt instructions from each of the 5 Gemini Gems
+Step 4: Code prompts into the backend AI service, injecting dynamic user data at runtime
+Step 5: Each AI call to Gemini injects: user budget, profile data, property data, market comparables
+Step 6: Gemini response is parsed, structured into a report card, and returned to UI
+Step 7: All interactions logged in MongoDB for AI memory and personalization
+
+4.4 — AI Memory & Personalization System
+
+What Gets Stored (MongoDB)
+Every AI query and response
+User's favorite property types
+Budget range refinements over time
+Listings saved vs listings dismissed
+Agent connection requests
+Time-on-page for each listing
+Mortgage calculator inputs
+How It Improves the Platform
+AI recommendations get sharper with each interaction
+CRM flags users as "high-intent" based on behavior signals
+Partners receive richer lead profiles (not just contact info)
+AI can predict when a user is ready to transact
+Kimure data becomes a proprietary asset over time
+Future: connect to KimXper analytics intelligence layer
+
+
+SECURITY CRITICAL: The Gemini API key must be stored in a backend environment variable (.env file). It must never appear in any front-end code, GitHub repository, or client-side JavaScript. Anyone with the key can incur unlimited Google API charges.
+
+
+SECTION 5  |  CRM DASHBOARD SYSTEM — KEY BUSINESS ENGINE
+
+
+5. Three-Tier CRM Dashboard
+
+
+
+The CRM dashboard system is the revenue engine of Kimure. It is where leads are delivered, deals are tracked, subscriptions are managed, and platform performance is monitored. Each of the three user tiers has a completely separate dashboard experience.
+
+
+5.1 — Dashboard A: Individual User
+
+AI property recommendations (refreshed on every login based on new behavior data)
+Saved searches and favourited listings
+AI reports history — all previously generated reports stored and accessible
+Financial insights panel: estimated borrowing power, recommended down payment
+"Connect with Agent" CTA — activates the Lead Button, sends full profile to partner
+Onboarding progress tracker: percentage of profile completeness
+Notification center: new matching listings, agent responses, AI updates
+Help Center quick access link
+
+5.2 — Dashboard B: Partner / Business (Revenue Engine)
+
+Lead Management
+Live lead inbox — real-time notifications on new leads
+Full user profile per lead:
+Budget range confirmed
+AI reports they ran (intent signals)
+Property types of interest
+Timeline to transact
+CRM pipeline view:
+New Lead
+Contacted
+Negotiation
+Closed — Won / Lost
+Transaction reporting (triggers commission calculation)
+AI Partner Intelligence
+AI suggestion: "Best time to contact this lead"
+AI ranking: "Top 3 listings matching this user's profile"
+Listing performance analytics: views, saves, lead conversions
+Market insights: price trends in operating regions
+
+Subscription & Billing
+Current plan and usage
+Upgrade / downgrade subscription
+Invoice history
+Featured listing purchases
+
+
+5.3 — Dashboard C: Admin (Super Admin / Support / CS)
+
+Super Admin Controls (Tier1)
+User management: view, edit, suspend, delete any account
+Partner approval workflow: Pending → Approved → Suspended
+RBAC management: assign and modify admin roles
+System configuration and platform settings
+Security: view all login alerts, failed attempts, flagged accounts
+Revenue tracking: subscription fees, commissions, CPL revenue
+AI usage monitoring: API calls per day, cost tracking
+Full audit trail: every admin action logged
+Support Team & Customer Service (Tier 2)
+Support Team: KYC review and approval, dispute resolution, partner verification
+Customer Service: respond to user tickets, limited read-only account access
+Ticket management system: open, assigned, resolved, escalated
+Partner onboarding queue management
+Live chat interface connected to user Help Center
+
+Customer Service Reps have NO deletion rights and NO approval authority. They assist and escalate.
+
+
+
+
+
+SECTION 6  |  EXTERNAL DATA & PAYMENT INTEGRATIONS
+
+
+6. Integrations & External APIs
+
+
+
+6.1 — Property Data APIs
+
+Canada
+CREA (Canadian Real Estate Association) DDF API — national MLS data
+Realtor.ca API — residential, rural, and commercial listings
+Land registry data (provincial — varies by province)
+Statistics Canada open data — demographic and market data
+United States & International
+Zillow API (Bridgewater) — property valuations, Zestimate
+Realtor.com API — residential listings
+ATTOM Data Solutions — nationwide property data
+Google Maps Platform — location services, geocoding, Street View
+
+
+6.2 — Financial Data Integrations
+
+Credit Bureau Integration
+Equifax Canada / Equifax US: official API partnership required
+TransUnion: alternative or supplemental bureau
+Data accessed (with user consent only):
+Credit score and history
+Debt-to-income ratio
+Mortgage eligibility estimate
+Used exclusively by the Mortgage Calculator AI engine
+User must provide explicit consent before any credit pull
+Payment Infrastructure
+Stripe — primary payment processor
+Use cases:
+Partner monthly subscription billing
+Cost-Per-Lead (CPL) agent purchases
+Featured listing upgrades
+One-time AI report purchases (Phase 3)
+Stripe webhooks handle payment events server-side
+Partner revenue share payouts via Stripe Connect
+Affiliate commission payouts via Stripe or Wise (Phase 3)
+
+
+6.3 — Cross-Platform Synchronization Matrix
+
+Feature
+Website
+Mobile App
+CRM Dashboard
+Phase 2 Target
+User Authentication
+Phase 1 UI
+Phase 1 UI
+N/A
+Live — Sprint 1
+Property Listings (Live)
+Static
+Static
+N/A
+Live API — Sprint 2
+AI Recommendations
+Placeholder
+Placeholder
+N/A
+Gemini API — Sprint 2
+User Dashboard
+Mockup
+Mockup
+N/A
+Connected — Sprint 3
+CRM Lead System
+No
+No
+No
+Built — Sprint 4
+In-App Messaging
+No
+No
+No
+Sprint 4
+Payment / Subscriptions
+No
+No
+No
+Stripe — Sprint 4
+Push Notifications
+No
+Partial
+N/A
+Sprint 3
+Offline Mode (PWA)
+No
+No
+N/A
+Sprint 3
+Equifax Integration
+No
+No
+No
+Sprint 4
+
+
+SECTION 7  |  MONETIZATION & REVENUE ARCHITECTURE
+
+
+7. Revenue Model
+
+
+
+Kimure's revenue model is B2B-first: rather than charging individual users, Kimure monetizes the professionals
+who need high-quality, pre-qualified leads. Because Kimure's AI pre-screens users before any partner contact,
+the leads Kimure sells carry a significant premium over industry standard cold-lead platforms.
+
+
+7.1 — Complete Revenue Stream Table
+
+Revenue Stream
+Model
+Rate / Amount
+Sprint to Activate
+Cost-Per-Lead (CPL)
+Agent buys lead
+$50–$400 per lead
+Sprint 4
+Pay-at-Closing Referral
+Agent pays post-deal
+25–35% of gross commission
+Sprint 4
+Kimure PRO Subscription
+Monthly SaaS
+$49–$199/month
+Sprint 4
+White-Label AI License
+Brokerage embed
+Custom enterprise pricing
+Phase 3
+Partner Subscriptions
+Tiered platform access
+Starter / Pro / Enterprise
+Sprint 4
+Featured Listings
+Per-listing upgrade
+Flat fee per listing
+Sprint 3
+Equifax Data Revenue
+Data & credit services
+Revenue share
+Sprint 5
+
+
+7.2 — Primary Revenue Model: Cost-Per-Lead Marketplace
+
+How It Works
+Agent loads a monthly budget into Kimure
+Agent selects target postal codes / ZIP codes
+When a qualified user in that area clicks Lead Button, agent is charged
+Higher budget = higher ranking on "Recommended Agents" list
+Industry average CPL for real estate: $50 to $400 per lead
+Kimure leads are pre-qualified by AI — warranting premium pricing
+Agent dashboard tracks spend, leads received, conversion rate
+Pay-at-Closing Option (Flex Model)
+Lead provided at zero upfront cost
+Agent signs agreement to pay 25–35% referral fee on gross commission at closing
+Ideal for new agents building their pipeline
+Kimure tracks via transaction reporting in the CRM
+Commission auto-calculated by platform on deal closure
+
+These two models can be offered in parallel. Agents choose their preferred structure.
+
+
+
+
+
+7.3 — Kimure PRO Subscription Features
+
+Verified enhanced profile on platform (trust badge, priority placement)
+Full CRM dashboard with lead tracking and pipeline management
+AI-powered lead insights: view the exact AI reports a user ran before contacting you
+"Best time to contact" AI suggestion per lead
+Unlimited leads (vs. capped on Starter)
+Priority support (4-hour response SLA vs. 24-hour standard)
+Monthly analytics report: listings performance, lead conversion, ROI
+
+7.4 — White-Label AI License (Enterprise)
+
+Mortgage brokerages or real estate offices pay a premium licensing fee
+Kimure's AI engines (Property Analyzer, Mortgage Calculator) embedded on their own website
+Captures leads for their specific team, branded with their identity
+Kimure earns licensing fee + per-query API cost recovery
+Highest-value revenue stream per client — target for Year 2 launch
+
+SECTION 8  |  DEVELOPMENT SPRINT EXECUTION PLAN
+
+
+8. Sprint Plan
+
+
+
+This sprint plan is structured for a small backend team (2–3 developers). Each sprint is 3–4 weeks. Total Phase 2 estimated duration: 18–22 weeks. Sprints run in sequence with testing overlapping each sprint boundary.
+
+
+SPRINT 1  |  Weeks 1–4   [ PLANNED ]
+Backend Foundation & Authentication
+Set up NestJS project structure with modular architecture
+Configure PostgreSQL + MongoDB with initial schema (users, listings, partners)
+Implement Firebase Auth + JWT — signup, login, logout, password reset
+Role-based routing middleware: Individual / Partner / Admin
+ENV variable management — Gemini key, Stripe key, Equifax key secured
+Email system: SendGrid integration for OTP, verification, notifications
+Deploy development environment on AWS EC2 / GCP
+Basic admin panel: create admin accounts via Super Admin only
+DELIVERABLE: Backend is live, users can register and log in securely
+
+
+
+
+SPRINT 2  |  Weeks 5–8   [ PLANNED ]
+AI Integration & Property Listings
+Extract all 5 Gemini Gem prompts and migrate to backend AI service layer
+Build AI Gateway Service with routing to all 5 engines
+Integrate Gemini API: Property Scout, Property Analyzer, Rental Finder, Property Evaluator, Mortgage Calculator
+Connect AI engines to user profile data (inject budget, intent, location at runtime)
+Build MongoDB AI interaction logging
+Property listings API: CRUD endpoints + search + filter
+Connect website front-end Buy / Invest / Rent pages to live listings API
+Connect Onboarding form to database (store all profile data)
+DELIVERABLE: AI tools are live inside Kimure — no longer in Google Gemini UI
+
+
+
+
+SPRINT 3  |  Weeks 9–12   [ PLANNED ]
+Dashboards & Mobile App Connection
+Build Individual User Dashboard API endpoints
+Build Partner Dashboard API endpoints (leads, listings, CRM pipeline)
+Build Admin Dashboard (user management, approval workflow, audit trail)
+Connect website dashboards to live API data
+React Native (Expo) mobile app: replace mock auth with real Firebase Auth
+Connect mobile dashboards to backend APIs
+Build "Ask Kimure AI" chat interface in mobile app
+Implement push notifications (Expo Notifications + Firebase FCM)
+PWA conversion: add manifest.json + service worker to Kimure.com
+DELIVERABLE: All dashboards are live on web and mobile
+
+
+
+
+SPRINT 4  |  Weeks 13–16   [ PLANNED ]
+CRM, Payments & Lead Marketplace
+Build full CRM pipeline in Partner Dashboard (New > Contacted > Negotiation > Closed)
+Implement Lead Button: user sends full profile to selected partner
+Build transaction reporting workflow (partner reports closed deal, commission calculated)
+Stripe integration: subscription billing (Starter / Pro / Enterprise)
+Stripe integration: CPL lead purchases and featured listing fees
+Equifax API integration for Mortgage Calculator (with user consent flow)
+In-app messaging system (Socket.io) between users and partners
+Agent onboarding and partner approval workflow in Admin panel
+DELIVERABLE: Kimure can collect revenue — monetization is active
+
+
+
+
+SPRINT 5  |  Weeks 17–20   [ PLANNED ]
+Testing, Security & Production Deployment
+Full end-to-end testing: registration, AI, listings, leads, payments
+Security audit: penetration testing, RBAC verification, API key exposure scan
+GDPR / PIPEDA / CASL compliance audit on all user data flows
+Performance optimization: Redis caching for AI responses and sessions
+Load testing: simulate 1,000 concurrent users
+App Store submission: iOS (Apple App Store) + Android (Google Play)
+Domain + SSL configuration: production deployment on Hostinger / AWS
+Soft launch: early access landing page + email capture (Mailchimp)
+DELIVERABLE: Kimure is production-ready and publicly accessible
+
+
+
+
+SECTION 9  |  LAUNCH STRATEGY & TALENT ACQUISITION
+
+
+9. Launch Strategy
+
+
+
+9.1 — Three-Stage Launch Plan
+
+Stage 1 — Soft Launch (Sprint 5)
+Deploy polished "Early Access" landing page
+Email capture via Mailchimp embedded in existing Hostinger site
+Collect early user and partner registrations
+Goal: 500+ email signups before full launch
+No AI features public yet — builds anticipation
+
+Stage 2 — Beta Release (Post-Sprint 5)
+Limited user access (invite-only 200 users)
+Full AI tools active and monitored
+5–10 verified partner accounts (agents, investors)
+CRM in live testing mode
+Bug bounty: users report issues for early access rewards
+Stage 3 — Full Public Launch
+Open registration for all user types
+Lead marketplace activated — agents can purchase CPL leads
+Partner subscription billing goes live (Stripe)
+Featured listings available for purchase
+iOS App Store + Google Play Store live
+Press release: position as "Canada's First AI Real Estate Brokerage Platform"
+Target markets: Canada first, then US market entry in Phase 3
+
+Rollout order: Canada → US → Global markets. Build Canadian MLS data first.
+
+
+
+
+
+9.2 — Talent Acquisition Strategy
+
+Phase 1 used Riipen Level-Up (subsidized student talent: 60 hours x 3 students = 180 hours). Phase 2 requires more sustained, senior development capacity. The following paths are recommended in order of cost-efficiency.
+
+
+Subsidized Talent Paths
+Riipen Level-Up (new cohort): post a Backend Development + API Integration project immediately — targets Sprint 1 and 2 tasks
+Riipen Future Path: longer-term paid internship with partial wage subsidy — ideal for a full-stack developer for Sprints 3-5
+SFU / UBC Co-Op Programs: post on computer science co-op boards — SWPP grant subsidizes up to 70% of wages
+MITACS Accelerate: for AI/ML-heavy features, university research partnerships provide funded graduate student development
+Recommended Hiring Roles
+Backend Developer (Node.js / NestJS, PostgreSQL) — Sprint 1–5 lead
+Full-Stack Developer (React + React Native) — Sprint 3–5, mobile + web connection
+AI / ML Integration Engineer — Sprint 2–3, Gemini API + AI memory system
+DevOps / Cloud Engineer (part-time) — Sprint 1 setup, Sprint 5 deployment
+QA Tester (Sprint 5) — end-to-end testing, security audit
+
+
+SECTION 10  |  FINAL DELIVERABLES & COMPLIANCE
+
+
+10. Phase 2 Deliverables & Compliance
+
+
+
+10.1 — Final Deliverables Checklist
+
+Platform & Technology
+☐  Fully functional website (not just UI) — all pages connected to live backend
+☐  Mobile app (iOS + Android) — published on App Store and Google Play
+☐  Progressive Web App (PWA) — installable from browser
+☐  Gemini API integrated — all 5 AI tools live inside Kimure
+☐  AI Memory System — MongoDB storing all user interactions
+☐  "Ask Kimure AI" interface — central AI chat in mobile app
+☐  Secure backend — Node.js / NestJS on AWS / GCP
+☐  Authentication — Firebase Auth + JWT + 2FA
+Business & Revenue
+☐  Three-tier CRM dashboards (User, Partner, Admin)
+☐  Lead marketplace — CPL system active
+☐  Stripe billing — subscription + CPL + featured listings
+☐  Equifax integration — Mortgage Calculator fully live
+☐  Partner approval workflow — KYC + RBAC + verified badges
+☐  Admin audit trail — all platform actions logged
+☐  In-app messaging (Socket.io)
+☐  Transaction reporting + commission calculation
+
+
+10.2 — Security & Compliance Requirements
+
+Technical Security
+HTTPS on all endpoints — SSL certificate deployed
+All API keys in ENV variables only — never in front-end code or GitHub
+bcrypt password hashing (12+ salt rounds)
+JWT token expiry: 15 minutes for access token, 7 days for refresh token
+Rate limiting on all public endpoints (100 requests/minute)
+Input validation + SQL injection prevention (NestJS class-validator)
+Automated daily database backups to S3
+RBAC enforced at API middleware level for every route
+Regulatory Compliance
+PIPEDA (Canada): user data handling, consent, breach notification
+GDPR (EU users): right to erasure, data portability, DPA
+CASL (Canada): email marketing consent, unsubscribe mechanism
+Real estate advertising compliance (province-by-province review)
+Financial services compliance for Mortgage Calculator outputs
+Equifax partner agreement terms and data handling requirements
+AI output disclaimer: "AI-generated analysis. Not certified professional advice."
+
+
+STRATEGIC DIFFERENTIATOR — Final Reminder:
+Kimure is not a listing portal. Kimure is an AI-powered decision engine and lead marketplace.
+Every feature built in Phase 2 must reinforce this positioning.
+The website shows listings. The AI creates intelligence. The CRM monetizes intent.
+That is the competitive moat that Zillow, Realtor.ca, and MLS platforms do not have.
+
+
+
+
+
+
+Phase 2 Production Blueprint  ·  Ready for Backend Development Team
+support@kimure.com   ·   www.kimure.com   ·   github.com/AliAbualsoud/Kimure-Website
